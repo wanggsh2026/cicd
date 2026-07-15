@@ -1,0 +1,11 @@
+{
+  "comments": [
+    {
+      "severity": "high",
+      "category": "test",
+      "path": "ds-upload-server/src/test/java/com/r2/ds/service/impl/DataSetConfigServiceImplTest.java",
+      "line": null,
+      "content": "删除整个单元测试类 DataSetConfigServiceImplTest.java 移除了 buildFieldLabelListRespVO 方法的回归覆盖。原测试分别验证字段元数据 ID 保留和标签回退逻辑，删除后没有替代测试覆盖，后续该方法回归风险升高。"
+    }
+  ]
+}

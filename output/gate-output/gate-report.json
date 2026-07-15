@@ -1,0 +1,39 @@
+{
+  "decision": {
+    "status": "BLOCKED",
+    "blocking_reasons": [
+      "OCR found 1 high finding(s)"
+    ],
+    "warnings": [
+      "No GitLab MR IID was provided; confirmation sheet will use commit-level context"
+    ],
+    "severity_counts": {
+      "high": 1
+    },
+    "required_fields": {
+      "deploy_commit": "50675701390f8ce30692794e38df96c02e1e4046",
+      "base_commit": "5be4174634f806a4f9ebc7f5eb918af27d6fd316",
+      "target_env": "test",
+      "deploy_diff_summary": "1 changed file(s)",
+      "regression_strategy": "Sanity Check Only"
+    }
+  },
+  "context": {
+    "repo": "ds-file-upload",
+    "build_number": "local-agent-debug-001",
+    "target_env": "test",
+    "deploy_branch": "dev",
+    "deploy_commit": "50675701390f8ce30692794e38df96c02e1e4046",
+    "base_commit": "5be4174634f806a4f9ebc7f5eb918af27d6fd316",
+    "gitlab_project_id": "",
+    "gitlab_mr_iid": "",
+    "gitlab_project_url": "",
+    "trigger_user": "agent-platform"
+  },
+  "changed_files": [
+    "ds-upload-server/src/test/java/com/r2/ds/service/impl/DataSetConfigServiceImplTest.java"
+  ],
+  "risks": {},
+  "ocr_exit_code": 0,
+  "ocr_stderr": "\n"
+}

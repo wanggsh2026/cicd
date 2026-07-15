@@ -1,0 +1,96 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "{env:OPENCODE_MODEL}",
+  "small_model": "{env:OPENCODE_SMALL_MODEL}",
+  "default_agent": "deploy-gate",
+  "autoupdate": false,
+  "share": "disabled",
+  "snapshot": false,
+  "instructions": [
+    ".opencode/skills/jenkins-deploy-gate/SKILL.md",
+    ".opencode/README.md"
+  ],
+  "watcher": {
+    "ignore": [
+      ".git/**",
+      "gate-output/**",
+      "node_modules/**",
+      "dist/**",
+      "target/**",
+      "build/**",
+      ".gradle/**",
+      "**/__pycache__/**"
+    ]
+  },
+  "permission": {
+    "*": "deny",
+    "read": "allow",
+    "grep": "allow",
+    "glob": "allow",
+    "skill": "allow",
+    "edit": "deny",
+    "webfetch": "deny",
+    "websearch": "deny",
+    "bash": {
+      "*": "deny",
+      "bash jenkins-deploy-gate-demo/scripts/run-deploy-gate.sh": "allow",
+      "bash ./jenkins-deploy-gate-demo/scripts/run-deploy-gate.sh": "allow",
+      "bash docker/entrypoint.sh": "allow",
+      "bash ./docker/entrypoint.sh": "allow",
+      "git rev-parse *": "allow",
+      "git diff *": "allow",
+      "git show *": "allow",
+      "git status *": "allow",
+      "python3 scripts/run_platform_offline_gate.py *": "allow",
+      "python3 scripts/resolve_deploy_base.py *": "allow",
+      "python3 scripts/gitlab_context.py *": "allow",
+      "python3 jenkins-deploy-gate-demo/scripts/evaluate_gate.py *": "allow",
+      "python3 scripts/generate_confirmation_docx.py *": "allow",
+      "ocr review *": "allow"
+    }
+  },
+  "agent": {
+    "deploy-gate": {
+      "description": "Run the Jenkins deployment admission gate and produce auditable PASS or BLOCKED artifacts before deployment.",
+      "mode": "primary",
+      "temperature": 0.1,
+      "steps": 20,
+      "prompt": "{file:.opencode/agents/deploy-gate-agent.md}\n\n{file:.opencode/skills/jenkins-deploy-gate/SKILL.md}",
+      "permission": {
+        "*": "deny",
+        "read": "allow",
+        "grep": "allow",
+        "glob": "allow",
+        "skill": "allow",
+        "edit": "deny",
+        "webfetch": "deny",
+        "websearch": "deny",
+        "bash": {
+          "*": "deny",
+          "bash jenkins-deploy-gate-demo/scripts/run-deploy-gate.sh": "allow",
+          "bash ./jenkins-deploy-gate-demo/scripts/run-deploy-gate.sh": "allow",
+          "bash docker/entrypoint.sh": "allow",
+          "bash ./docker/entrypoint.sh": "allow",
+          "git rev-parse *": "allow",
+          "git diff *": "allow",
+          "git show *": "allow",
+          "git status *": "allow",
+          "python3 scripts/run_platform_offline_gate.py *": "allow",
+          "python3 scripts/resolve_deploy_base.py *": "allow",
+          "python3 scripts/gitlab_context.py *": "allow",
+          "python3 jenkins-deploy-gate-demo/scripts/evaluate_gate.py *": "allow",
+          "python3 scripts/generate_confirmation_docx.py *": "allow",
+          "ocr review *": "allow"
+        }
+      }
+    }
+  },
+  "command": {
+    "deploy-gate": {
+      "description": "Run Jenkins deploy gate for the current workspace.",
+      "agent": "deploy-gate",
+      "model": "{env:OPENCODE_MODEL}",
+      "template": "Use the Jenkins Deploy Gate skill. Read Jenkins environment variables, run `bash jenkins-deploy-gate-demo/scripts/run-deploy-gate.sh`, inspect `gate-output/gate-report.json`, and return a concise PASS or BLOCKED summary. Do not deploy or restart services."
+    }
+  }
+}
