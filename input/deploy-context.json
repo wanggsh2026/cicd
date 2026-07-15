@@ -1,0 +1,12 @@
+{
+  "repo": "ds-file-upload",
+  "build_number": "local-agent-debug-001",
+  "target_env": "test",
+  "deploy_branch": "dev",
+  "deploy_commit": "50675701390f8ce30692794e38df96c02e1e4046",
+  "base_commit": "5be4174634f806a4f9ebc7f5eb918af27d6fd316",
+  "gitlab_project_id": "",
+  "gitlab_mr_iid": "",
+  "gitlab_project_url": "",
+  "trigger_user": "agent-platform"
+}

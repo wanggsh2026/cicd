@@ -1,0 +1,22 @@
+{
+  "blocking_severities": ["critical", "high"],
+  "max_medium_findings": 5,
+  "require_ocr_success": true,
+  "require_deploy_base": true,
+  "require_gitlab_context": false,
+  "require_confirm_required_fields": true,
+  "confirm_required_fields": [
+    "deploy_commit",
+    "base_commit",
+    "target_env",
+    "deploy_diff_summary",
+    "regression_strategy"
+  ],
+  "risk_file_patterns": {
+    "database": ["**/mapper/**/*.xml", "**/*Mapper.xml", "**/db/**", "**/migration/**"],
+    "api_contract": ["**/controller/**/*.java", "**/*Controller.java", "**/dto/**/*.java", "**/vo/**/*.java"],
+    "permission": ["**/*Auth*.java", "**/*Permission*.java", "**/*Security*.java"],
+    "config": ["**/*.yml", "**/*.yaml", "**/*.properties"],
+    "async_or_concurrency": ["**/*Async*.java", "**/*Executor*.java", "**/*Thread*.java"]
+  }
+}

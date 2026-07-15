@@ -1,0 +1,71 @@
+pipeline {
+  agent none
+
+  parameters {
+    string(name: 'TARGET_ENV', defaultValue: 'test', description: 'Deployment environment, such as dev/test/uat/prod')
+    string(name: 'LAST_SUCCESS_DEPLOY_COMMIT', defaultValue: '', description: 'Last commit successfully deployed to TARGET_ENV')
+    string(name: 'GATE_IMAGE', defaultValue: 'r2-code-review:latest', description: 'Docker image containing ocr, git, bash, and python3')
+    booleanParam(name: 'DEPLOY_AFTER_GATE', defaultValue: false, description: 'Demo switch. Keep false until the gate is validated.')
+  }
+
+  environment {
+    GATE_CONFIG = 'ci/jenkins-deploy-gate-demo/gate-config.example.json'
+    GATE_OUTPUT_DIR = 'gate-output'
+  }
+
+  stages {
+    stage('Checkout') {
+      agent any
+      steps {
+        checkout scm
+        stash name: 'source', includes: '**/*', useDefaultExcludes: false
+      }
+    }
+
+    stage('Jenkins Deploy Gate') {
+      agent {
+        docker {
+          image "${params.GATE_IMAGE}"
+          args '-u root:root'
+        }
+      }
+      environment {
+        TARGET_ENV = "${params.TARGET_ENV}"
+        LAST_SUCCESS_DEPLOY_COMMIT = "${params.LAST_SUCCESS_DEPLOY_COMMIT}"
+        OCR_LLM_URL = credentials('ocr-llm-url')
+        OCR_LLM_TOKEN = credentials('ocr-llm-token')
+        OCR_LLM_MODEL = credentials('ocr-llm-model')
+        GITLAB_TOKEN = credentials('gitlab-token')
+      }
+      steps {
+        unstash 'source'
+        sh 'bash ci/jenkins-deploy-gate-demo/scripts/run-deploy-gate.sh'
+      }
+      post {
+        always {
+          archiveArtifacts artifacts: 'gate-output/**/*', allowEmptyArchive: true
+        }
+      }
+    }
+
+    stage('Build') {
+      when {
+        expression { return params.DEPLOY_AFTER_GATE }
+      }
+      agent any
+      steps {
+        sh 'mvn -DskipTests=false clean package'
+      }
+    }
+
+    stage('Deploy') {
+      when {
+        expression { return params.DEPLOY_AFTER_GATE }
+      }
+      agent any
+      steps {
+        echo 'Put upload/restart steps here after the gate is stable.'
+      }
+    }
+  }
+}
