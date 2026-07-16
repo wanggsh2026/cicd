@@ -69,3 +69,27 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Build image tar
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile
+          push: false
+          tags: |
+            r2-code-review:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          labels: ${{ steps.meta.outputs.labels }}
+          outputs: type=docker,dest=/tmp/r2-code-review.tar
+          cache-from: type=gha
+
+      - name: Compress image tar
+        shell: bash
+        run: gzip -9 /tmp/r2-code-review.tar
+
+      - name: Upload image tar artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: r2-code-review-image
+          path: /tmp/r2-code-review.tar.gz
+          retention-days: 7
